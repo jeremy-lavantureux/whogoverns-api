@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import metadata, map as map_router
 from app.routers import country, events, articles
 from app.routers import timeline
+from app.routers import country_summary
 
 
 app = FastAPI(title="WhoGoverns API", version="1.0.0")
@@ -29,3 +30,4 @@ app.include_router(country.router, prefix="/v1", tags=["country"])
 app.include_router(events.router, prefix="/v1", tags=["events"])
 app.include_router(articles.router, prefix="/v1", tags=["articles"])
 app.include_router(timeline.router, prefix="/v1", tags=["timeline"])
+app.include_router(country_summary.router, prefix="/v1", tags=["country"])
