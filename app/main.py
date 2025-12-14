@@ -72,29 +72,31 @@ async def cache_headers(request: Request, call_next):
 
 
 # -----------------------------
-# CORS (prod vs dev)
+# CORS (prod + previews + dev)
 # -----------------------------
-env = os.getenv("ENV", "dev")
+env = os.getenv("ENV", "dev").lower()
 
-if env == "prod":
-    allowed_origins = [
-        "https://whogoverns.org",
-        "https://www.whogoverns.org",
-    ]
-else:
-    allowed_origins = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ]
+# Always allow your production domains
+allowed_origins = [
+    "https://whogoverns.org",
+    "https://www.whogoverns.org",
+    # keep dev convenience (safe with allow_credentials=False)
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# Also allow Cloudflare Pages preview domains:
+# e.g. https://2064e150.whogoverns-web.pages.dev
+allowed_origin_regex = r"^https://([a-z0-9-]+\.)?whogoverns-web\.pages\.dev$"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=allowed_origin_regex,
     allow_credentials=False,
-    allow_methods=["GET"],
+    allow_methods=["GET", "OPTIONS"],
     allow_headers=["*"],
 )
-
 
 # -----------------------------
 # Core endpoints
