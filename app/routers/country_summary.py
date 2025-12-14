@@ -3,6 +3,16 @@ from app.db import get_conn
 
 router = APIRouter()
 
+POLITICAL_TYPES = [
+    "election",
+    "government_change",
+    "referendum",
+    "constitutional_change",
+    "institutional_crisis",
+    "other_political",
+]
+
+
 @router.get("/country/{iso3}/summary")
 def country_summary(
     iso3: str,
@@ -88,11 +98,13 @@ def country_summary(
             """
             select id, country_iso3, year, event_type, title, description, event_date, source_id
             from public.country_events
-            where country_iso3 = %(iso3)s and year = %(year)s
+            where country_iso3 = %(iso3)s
+              and year = %(year)s
+              and event_type = any(%(types)s)
             order by event_date nulls last, id
             limit %(limit)s
             """,
-            {"iso3": iso3, "year": year, "limit": events_limit},
+            {"iso3": iso3, "year": year, "types": POLITICAL_TYPES, "limit": events_limit},
         ).fetchall()
 
         # Articles
