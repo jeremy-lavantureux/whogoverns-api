@@ -50,6 +50,7 @@ def country_summary(
                    r.coalition,
                    r.confidence,
                    r.source_id,
+                   r.leader_name,
                    p.id as party_id,
                    p.name as party_name,
                    p.abbreviation as party_abbr
@@ -63,6 +64,7 @@ def country_summary(
         selected = None
         if power:
             selected = {
+                "leader_name": power["leader_name"],
                 "year": power["year"],
                 "main_party": None if power["party_id"] is None else {
                     "id": power["party_id"],
@@ -81,6 +83,7 @@ def country_summary(
                    r.coalition,
                    r.confidence,
                    r.source_id,
+                   r.leader_name,
                    p.id as party_id,
                    p.name as party_name,
                    p.abbreviation as party_abbr
@@ -123,7 +126,11 @@ def country_summary(
 
     # Compress timeline into segments (same logic as /v1/timeline)
     def same(a, b):
-        return a["party_id"] == b["party_id"] and a["coalition"] == b["coalition"]
+        return (
+            a["party_id"] == b["party_id"]
+            and a["coalition"] == b["coalition"]
+            and a["leader_name"] == b["leader_name"]
+        )
 
     segments = []
     if years:
@@ -138,6 +145,7 @@ def country_summary(
                 segments.append({
                     "start_year": start,
                     "end_year": end,
+                    "leader_name": cur["leader_name"],
                     "main_party": None if cur["party_id"] is None else {
                         "id": cur["party_id"],
                         "name": cur["party_name"],
@@ -154,6 +162,7 @@ def country_summary(
         segments.append({
             "start_year": start,
             "end_year": end,
+            "leader_name": cur["leader_name"],
             "main_party": None if cur["party_id"] is None else {
                 "id": cur["party_id"],
                 "name": cur["party_name"],

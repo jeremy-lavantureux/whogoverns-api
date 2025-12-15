@@ -46,6 +46,7 @@ def map_data(
           r.coalition,
           r.confidence,
           r.source_id,
+          r.leader_name,
           p.id as party_id,
           p.name as party_name,
           p.abbreviation as party_abbr
@@ -79,6 +80,7 @@ def map_data(
                     "coverage_status": row["coverage_status"],
                 },
                 "power": {
+                    "leader_name": row["leader_name"],
                     "main_party": None if row["party_id"] is None else {
                         "id": row["party_id"],
                         "name": row["party_name"],

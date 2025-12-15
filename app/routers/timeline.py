@@ -8,6 +8,7 @@ def _same_power(a: dict, b: dict) -> bool:
     return (
         a.get("party_id") == b.get("party_id")
         and a.get("coalition") == b.get("coalition")
+        and a.get("leader_name") == b.get("leader_name")
     )
 
 @router.get("/timeline/{iso3}")
@@ -47,6 +48,7 @@ def timeline(
                    r.coalition,
                    r.confidence,
                    r.source_id,
+                   r.leader_name,
                    p.id as party_id,
                    p.name as party_name,
                    p.abbreviation as party_abbr
@@ -64,6 +66,7 @@ def timeline(
     for r in rows:
         years.append({
             "year": r["year"],
+            "leader_name": r["leader_name"],
             "party_id": r["party_id"],
             "party": None if r["party_id"] is None else {
                 "id": r["party_id"],
@@ -89,6 +92,7 @@ def timeline(
                 segments.append({
                     "start_year": seg_start,
                     "end_year": seg_end,
+                    "leader_name": cur.get("leader_name"),
                     "main_party": cur["party"],
                     "coalition": cur["coalition"],
                     "confidence": cur["confidence"],
@@ -102,6 +106,7 @@ def timeline(
         segments.append({
             "start_year": seg_start,
             "end_year": seg_end,
+            "leader_name": cur.get("leader_name"),
             "main_party": cur["party"],
             "coalition": cur["coalition"],
             "confidence": cur["confidence"],

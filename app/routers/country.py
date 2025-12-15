@@ -39,6 +39,7 @@ def country_page(
                    r.coalition,
                    r.confidence,
                    r.source_id,
+                   r.leader_name,
                    p.id as party_id,
                    p.name as party_name,
                    p.abbreviation as party_abbr
@@ -55,6 +56,7 @@ def country_page(
     by_year = {}
     for r in rows:
         by_year[r["year"]] = {
+            "leader_name": r["leader_name"],
             "main_party": None if r["party_id"] is None else {
                 "id": r["party_id"],
                 "name": r["party_name"],
